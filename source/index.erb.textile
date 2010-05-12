@@ -27,7 +27,7 @@ h3. Customization
 </dl>
 <dl>
   <% guide('Theming', 'theming.html') do %>
-    Learn how to change the appearance of your store using a theme extension.
+    Learn how to change the appearance of your store using a theme.
   <% end %>
 </dl>
                                                                    
