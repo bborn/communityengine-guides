@@ -1,0 +1,338 @@
+h2. Getting Started With CommunityEngine
+
+This guide covers getting up and running with CommunityEngine. After reading it, you should be familiar with:
+
+* Installing CommunityEngine, creating a new CommunityEngine application, and connecting your application to a database
+* The general layout of a CommunityEngine application
+* The basic principles behind the CommunityEngine design
+* How to quickly generate the starting pieces of a CommunityEngine application.
+* How to continue with this towards a first production system.
+
+endprologue.
+
+h3. This Guide Assumes
+
+This guide is designed for beginners who want to get started with a CommunityEngine application from scratch. It assumes a basic working knowledge of Ruby on Rails.  To get the most out of this guide, you need to have some prerequisites installed:
+
+* The "Ruby":http://www.ruby-lang.org/en/downloads language
+* The "RubyGems":http://rubyforge.org/frs/?group_id=126 packaging system
+* The "Ruby on Rails":http://rubyonrails.org/download gems 
+* A working installation of "SQLite":http://www.sqlite.org (preferred), "MySQL":http://www.mysql.com, or "PostgreSQL":http://www.postgresql.org
+
+It is highly recommended that you *familiarize yourself with Ruby on Rails before diving into CommunityEngine*. You will find it much easier to follow what’s going on with a CommunityEngine application if you understand basic Ruby syntax. 
+
+There are many excellent online resources for learning Ruby on Rails, including:
+
+* "Rails Guides":http://guides.rubyonrails.org
+* "Ruby on Rails Wiki":http://wiki.rubyonrails.org
+* "Railscasts (Free Screencasts)":http://railscasts.com/
+
+There are also some good free resources on the internet for learning Ruby, including:
+
+* "Mr. Neighborly’s Humble Little Ruby Book":http://www.humblelittlerubybook.com
+* "Programming Ruby":http://www.rubycentral.com/book
+* "Why’s (Poignant) Guide to Ruby":http://mislav.uniqpath.com/poignant-guide/
+
+h3. What is CommunityEngine?
+
+CommunityEngine is a free, open-source social network plugin for Ruby on Rails applications. Drop it into your new or existing application, and you’ll instantly have all the features of a basic community site.
+
+CommunityEngine is "open source":http://en.wikipedia.org/wiki/Open_source.  It is licensed under the very permissive "MIT License":http://github.com/bborn/communityengine/blob/master/LICENSE.  You are free to use the software as you see fit, at no charge.  
+
+The goal of the project is to build a complete open source social networking solution for Ruby on Rails. CommunityEngine was originally extracted from the source code of "Curbly.com":http://curbly.com, and has since grown in scope and functionality. It is designed to be customizable and flexible and to allow integration with existing Ruby on Rails applications.
+
+h3. Creating a New CommunityEngine Project
+
+If you follow this guide, you’ll create a CommunityEngine project called <tt>MyApp</tt>, a basic community-style web application. Before you can start building the application, you need to make sure that you have Rails itself installed.
+
+h4. Installing Rails
+
+WARNING: CommunityEngine supports RAILS VERSION 2.3.4 (higher versions are not yet supported)
+
+In most cases, the easiest way to install Rails is to take advantage of RubyGems:
+
+<shell>
+$ gem install rails
+</shell>
+
+h4. CommunityEngine Requirements
+
+WARNING: The following gems/libraries are required to run CommunityEngine:
+
+<shell>
+- ImageMagick (>6.4) 
+- Several gems:
+  desert 0.5.2
+  rmagick
+  hpricot
+  htmlentities
+  rake 0.8.3
+  haml 2.0.5
+  calendar_date_select
+  ri_cal
+  authlogic
+  searchlogic
+  aws-s3 (if using s3 for photos)
+</shell>
+
+h4. Getting CommunityEngine Running
+
+This will show you how to install CE with a fresh Rails app. If you want to add CE to existing application, see the "Installing into an existing application guide":install-existing.html.
+
+You have two options: *use the Rails generator*, or *install CE by hand*.
+
+h5. Using the Rails generator:
+
+<shell>
+  $ rails my_app -m http://www.communityengine.org/edge_install_template.rb
+</shell>
+
+h5. Installing manually:
+
+Create a rails app if you don't have one already):
+
+<shell>
+  $ rails my_app 
+</shell>
+
+Install desert:
+
+<shell>
+  $ sudo gem install desert
+</shell>
+	
+Put the community engine plugin into plugins directory (use one of the following methods):
+
+# If you're not using git, and just want to add the source files:
+  Download a tarball from "https://github.com/bborn/communityengine/tarball/master":https://github.com/bborn/communityengine/tarball/master and unpack it into <tt>/vendor/plugins/community_engine</tt>
+# Using git, make a shallow clone of the community_engine repository:
+<shell>
+    $ git clone --depth 1 git://github.com/bborn/communityengine.git vendor/plugins/community_engine
+</shell>
+
+If you want to keep your community_engine plugin up to date using git, you'll have to add it as a "submodule":http://www.kernel.org/pub/software/scm/git/docs/user-manual.html#submodules:
+	
+<shell>
+git submodule add git://github.com/bborn/communityengine.git vendor/plugins/community_engine
+git submodule init
+git submodule update
+</shell>	
+
+TIP: Make sure you rename your CE directory to <tt>community_engine</tt> (note the underscore) if it isn't named that.
+
+Create your database and modify your <tt>config/database.yml</tt> appropriately.
+
+Delete <tt>public/index.html</tt> (if you haven't already)
+
+Modify your <tt>environment.rb</tt> as indicated below:
+
+<ruby>
+## environment.rb should look something like this:
+RAILS_GEM_VERSION = '2.3.4' unless defined? RAILS_GEM_VERSION
+require File.join(File.dirname(__FILE__), 'boot')
+
+require 'desert'
+
+Rails::Initializer.run do |config|
+  config.plugins = [:community_engine, :white_list, :all]
+  config.plugin_paths += ["#{RAILS_ROOT}/vendor/plugins/community_engine/plugins"]
+  config.gem 'calendar_date_select'
+  config.gem 'icalendar'		
+  config.gem 'authlogic'
+  config.gem 'searchlogic'
+  
+  config.action_controller.session = {
+    :key    => '_your_app_session',
+    :secret => 'secret'
+  }
+
+  ## ... Your stuff here ... ##
+end
+# Include your application configuration below
+require "#{RAILS_ROOT}/vendor/plugins/community_engine/config/boot.rb"
+</ruby>
+
+Modify each environment file (<tt>development.rb</tt>, <tt>test.rb</tt>, and <tt>production.rb</tt>) as indicated below:
+
+<ruby>
+# development.rb, production.rb, and test.rb should include something like:
+APP_URL = "http://localhost:3000" (or whatever your URL will be for that particular environment)
+</ruby>
+
+Modify your <tt>routes.rb</tt> as indicated below:
+
+<ruby>
+# Add this after any of your own existing routes, but before the default rails routes: 
+map.routes_from_plugin :community_engine
+# Install the default routes as the lowest priority.
+map.connect ':controller/:action/:id'
+map.connect ':controller/:action/:id.:format'     
+</ruby>
+
+Generate the community engine migrations and run them: 
+
+<shell>
+$ script/generate plugin_migration    
+$ rake db:migrate
+</shell>
+
+You may need to change these lines in <tt>application.rb</tt> (if you're not using cookie sessions):
+
+<ruby>
+# See ActionController::RequestForgeryProtection for details
+# Uncomment the :secret if you're not using the cookie session store
+protect_from_forgery # :secret => 'your_secret_string'
+</ruby>
+
+Run tests (remember, you must run <tt>rake test</tt> before you can run the community_engine tests): 
+
+<shell>
+$ rake test
+$ rake community_engine:test
+</shell>
+
+Start your server and check out your site! 
+
+<shell>
+$ ./script/server
+</shell>
+
+h4. Optional Configuration
+
+To override the default configuration, create an <tt>application.yml</tt> file in <tt>RAILS_ROOT/config</tt>
+
+The application configuration defined in this file overrides the one defined in <tt>/community_engine/config/application.yml</tt>
+
+This is where you can change commonly used configuration variables, like <tt>AppConfig.community_name</tt>, etc.
+
+This YAML file will get converted into an OpenStruct, giving you things like <tt>AppConfig.community_name</tt>, <tt>AppConfig.support_email</tt>, etc.
+
+h5. Photo Uploading
+
+By default CommunityEngine uses the filesystem to store photos.
+
+To use Amazon S3 as the backend for your file uploads, you'll need the aws-s3 gem installed, and you'll need to add a file called <tt>amazon_s3.yml</tt> to the application's root config directory (examples are in <tt>/community_engine/sample_files</tt>). 
+
+You'll need to change your configuration in your <tt>application.yml</tt> to tell CommunityEngine to use s3 as the photo backend.
+
+Finally, you'll need an S3 account for S3 photo uploading.
+
+h5. Roles
+
+CommunityEngine Users have a Role (by default, it's admin, moderator, or member)
+
+To set a user as an admin, you must manually change his <tt>role_id</tt> through the database.
+
+Once logged in as an admin, you'll be able to toggle other users between moderator and member (just go to their profile page and look on the sidebar.)
+
+Admins and moderators can edit and delete other users' posts.
+
+There is a rake task to make an existing user into an admin: 
+
+<ruby>
+rake community_engine:make_admin email=user@foo.com 
+</ruby>
+
+(Pass in the e-mail of the user you'd like to make an admin)
+
+
+h5. Themes
+
+To create a theme:
+
+Add a 'themes' directory in <tt>RAILS_ROOT</tt> with the following structure:
+
+<shell>
+/RAILS_ROOT
+  /themes
+    /your_theme_name
+      /views
+      /images
+      /stylesheets
+      /javascripts
+</shell>
+      
+Add <tt>theme: your_theme_name</tt> to your <tt>application.yml</tt> (you'll have to restart your server after doing this)
+
+Customize your theme. For example: you can create a <tt>/RAILS_ROOT/theme/your_theme_name/views/shared/_scripts_and_styles.html.haml</tt> to override the default one, and pull in your theme's styleshees.
+
+To get at the stylesheets (or images, or javascripts) from your theme, just add <tt>/theme/</tt> when referencing the resource, for example:
+
+<ruby>
+= stylesheet_link_tag 'theme/screen'  # this will reference the screen.css stylesheet within the selected theme's stylesheets directory.
+</ruby>
+
+TIP: When running in production mode, theme assets (images, js, and stylesheets) are automatically copied to you public directory (avoiding a Rails request on each image load).
+
+h5. Localization
+
+Localization is done via Rails native I18n API. We've added some extensions to String and Symbol to allow backwards compatibility (we used to use Globalite).
+
+Strings and Symbols respond to the <tt>.l</tt> method that allows for a look up of the symbol (or a symbolized version of the string) into a strings file which is stored in yaml. 
+
+For complex strings with substitutions, Symbols respond to the <tt>.l</tt> method with a hash passed as an argument, for example: 
+
+<ruby>
+:welcome.l :name => current_user.name  
+</ruby>
+
+And in your language file you'd have:
+
+<ruby>
+welcome: "Welcome {{name}}"
+</ruby>
+
+To customize the language, or add a new language create a new yaml file in <tt>RAILS_ROOT/lang/ui</tt>.
+The name of the file should be <tt>LANG-LOCALE.yml</tt> (e.g. <tt>en-US.yml</tt> or <tt>es-PR</tt>)
+The language only file (<tt>es.yml</tt>) will support all locales.
+
+To wrap all localized strings in a <tt><span></tt> that shows their localization key, put this in your <tt>environment.rb</tt>:
+
+<ruby>
+AppConfig.show_localization_keys_for_debugging = true if RAILS_ENV.eql?('development')  
+</ruby>
+
+Note, this will affect the look and feel of buttons. You can highlight what is localized by using the <tt>span.localized</tt> style (look in <tt>screen.css</tt>)
+
+For more, see <tt>/lang/readme.txt</tt>.
+
+h5. Other notes
+
+Any views you create in your app directory will override those in <tt>community_engine/app/views</tt>. 
+For example, you could create <tt>RAILS_ROOT/app/views/layouts/application.html.haml</tt> and have that include your own stylesheets, etc.
+
+You can also override CommunityEngine's controllers by creating identically-named controllers in your application's <tt>app/controllers</tt> directory.
+
+
+h5. Gotchas
+
+# I get errors running rake! Error: (wrong number of arguments (3 for 1)
+  - make sure you have the latest version of rake
+# When upgrading to Rails 2.3, make sure your <tt>action_controller.session</tt> key is called <tt>:key</tt>, instead of the old <tt>:session_key</tt>:
+
+<ruby>
+config.action_controller.session = {
+  :key => '_ce_session',
+  :secret      => 'secret'
+}
+</ruby>
+
+h4. Contributors - Thanks! :)
+
+* Bryan Kearney - localization
+* Alex Nesbitt - forgot password bugs
+* Alejandro Raiczyk - Spanish localization
+* "Fritz Thielemann":http://github.com/fritzek - German localization, il8n 
+* "Oleg Ivanov":http://github.com/morhekil - <tt>acts_as_taggable_on_steroids</tt>
+* David Fugere - French localization
+* Barry Paul - routes refactoring
+* "Andrei Erdoss":http://github.com/cauta localization
+* "Errol Siegel":http://github.com/eksatx simple private messages integration, documentation help
+* Carl Fyffe - documentation, misc.
+* "Juan de Frías":http://github.com/juafrlo static pages, photo albums, message_controller tests
+* "Joel Nimety":http://github.com/jnimety authlogic authentication
+* "Stephane Decleire":http://github.com/sdecleire i18n, fr-FR locale
+
+Bug tracking is via "Lighthouse":http://communityengine.lighthouseapp.com
+
+
