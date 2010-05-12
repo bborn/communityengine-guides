@@ -1,4 +1,4 @@
-h2. Tutorial: Customizing CE using a theme
+h2. Internationalization/Localization
 endprologue.
 
 WARNING. This page is a stub, please help complete it.
