@@ -4,5 +4,30 @@ This guide presents accumulated wisdom from developers working on CommunityEngin
 
 endprologue.
 
-WARNING. This page is a stub, please help complete it.
+h3. How to Minimise Problems When Upgrading Community Engine
+
+Community Engine is designed to work as a plugin, and as such new versions of the plugin are released on a semi-regular basis in order to add functionality and fix issues. In order to ensure the upgrade process is as painless as possible the following tips have been collected:
+
+* The number 1 tip to avoid problems is to avoid making changes to the community engine plugin code. If you make changes to the plugin, those changes will not be present when you upgrade.  
+* If you must customise code in the plugin, please consider whether the customisation is suitable of inclusion within the Community Engine Core. If it is, please make the effort to "contribute your change to the core":./contributing_to_community_engine.html.
+
+h3. Gotchas - Miscilaneous Tips
+
+This section is a collection of useful tips that don't deserve a topic of their own, but are handy to know.
+
+h4. Turn off TinyMCE (HTML WYSIWYG Editor)
+
+To turn off TinyMCE functionality (Javascript HTML WYSIWYG editor control) for a text area, just add the class 'mceNoEditor' to any view textareas that you don't want converted to rich text editors.
+
+h4. Undefined Method for ActiveRecord::Validations::DateTime:Module
+
+The Validates Date Time plugin creates it's own DateTime class, so if you find the following exception:
+<shell>
+NoMethodError: undefined method `now'
+for ActiveRecord::Validations::DateTime:Module
+</shell>
+
+you are probably trying to use a DateTime object in your code. You can make ruby use the base DateTime class by prepending the Classname with 'Date::', i.e. Date::DateTime.now
+
+
 
