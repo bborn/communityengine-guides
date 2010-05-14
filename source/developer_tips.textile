@@ -11,7 +11,7 @@ Community Engine is designed to work as a plugin, and as such new versions of th
 * The number 1 tip to avoid problems is to avoid making changes to the community engine plugin code. If you make changes to the plugin, those changes will not be present when you upgrade.  
 * If you must customise code in the plugin, please consider whether the customisation is suitable of inclusion within the Community Engine Core. If it is, please make the effort to "contribute your change to the core":./contributing_to_community_engine.html.
 
-h3. Gotchas - Miscilaneous Tips
+h3. Gotchas - Miscellaneous Tips
 
 This section is a collection of useful tips that don't deserve a topic of their own, but are handy to know.
 
