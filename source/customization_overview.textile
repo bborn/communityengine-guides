@@ -1,5 +1,70 @@
 h2. Customization Overview
 endprologue.
 
-WARNING. This page is a stub, please help complete it.
+h3. Customizaation
+
+h4. Overriding Models
+
+Thanks to CE's use of the Desert plugins, Model overriding is as simple as overriding controllers or views. For example, to override the 'login' method of CE's User model, you'd just create a user.rb in your own app/models directory with the same class declaration ("User << ActiveRecord::Base") and then override just the method you want to change. So:
+
+<shell>
+class User << ActiveRecord::Base
+
+  def login
+     return "Community Engine Rocks My Socks!"
+  end
+
+end
+</shell>
+
+Note: Validations cannot be overridden by writing a replacement validation in this way. To override a validation without directly editing the CE plugin code the following "'hack' is currently recommended":http://groups.google.com/group/communityengine/browse_thread/thread/2b1edce6a4c5e14e/0d5388d5eb23546e?lnk=gst&q=overriding+validation#0d5388d5eb23546e.
+
+h4. Overriding Controllers
+
+Controller overriding is as simple as overriding models or views. For example, to override the 'edit' method of CE's User Controller, you'd just create a user_controller.rb in your own app/controllers directory with the same class declaration ("UserController << BaseController") and then override just the method you want to change. So:
+
+<shell>
+class UserController << BaseController
+
+  def edit
+     # always edit number 1
+     @user = User.find 1
+  end
+
+end
+</shell>
+
+h4. Views
+
+To override a CE view, copy the desired view file into your ./app/views/<model> directory and make your changes. For example, if you wanted to change the user account edit page, copy the "edit_account.html.haml" from "./vendors/plugins/community_engine/app/views/users/" to "./app/views/users/".
+
+h3. Configuration
+
+The following configuration items are available in ./config/application.yml
+
+h4. Community Name
+
+<shell>
+community_name: <communityname>
+</shell>
+
+With <communityname> being replaced by the name of your theme, e.g. "Marlon Brando Look-a-likes Association - MBLAA"
+
+<shell>
+community_name: Marlon Brando Look-a-likes Association - MBLAA
+</shell>
+
+h4. Theme
+
+<shell>
+theme: <themename>
+</shell>
+
+With <themename> being replaced by the name of your theme, e.g. "dappled"
+
+<shell>
+theme: dappled
+</shell>
+
+
 
