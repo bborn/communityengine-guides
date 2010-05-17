@@ -42,6 +42,22 @@ h3. Configuration
 
 The following configuration items are available in ./config/application.yml
 
+h4. Anonymous Commenting
+
+Community Engine includes functionality to allow anonymous users (i.e. non logged in users) to make comments on content. This can be turned on/off with the "allow_anonymous_commenting" configuration item. 
+
+<shell>
+allow_anonymous_commenting: [true|false]
+</shell>
+
+By default, anonymous commenting is turned off in CE, to turn it on set the configuration value to true. 
+
+<shell>
+allow_anonymous_commenting: true
+</shell>
+
+When turned on, anonymous users can comment, and are requested to enter their email address, website and pass a anti-spam CAPTCHA test.
+
 h4. Community Name
 
 <shell>
