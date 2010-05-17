@@ -56,7 +56,7 @@ By default, anonymous commenting is turned off in CE, to turn it on set the conf
 allow_anonymous_commenting: true
 </shell>
 
-When turned on, anonymous users can comment, and are requested to enter their email address, website and pass a anti-spam CAPTCHA test.
+When turned on, anonymous users can comment. To turn on a CAPTCHA test for the comment, use the recaptcha_pub_key and recaptcha_priv_key configuration settings. Enabling the CAPTCHA for anonymous comments all allows the commenter to record a name, website and email address, and whether to notify the user of followups by email.
 
 h4. Community Name
 
@@ -80,6 +80,14 @@ With <themename> being replaced by the name of your theme, e.g. "dappled"
 
 <shell>
 theme: dappled
+</shell>
+
+h4. Captcha
+
+Communinity Engine provides the ability to turn on a anti-spam CAPTCHA method for anonymous commenting and account creation. This functionality utilises "Recapcha":http://recaptcha.net/ . This functionality is turned off by default. To enable this functionality both a private and public key to the recaptcha service are required. These keys can be obtained at "Recapcha":http://recaptcha.net/ by entering your domain name. 
+<shell>
+recaptcha_pub_key: YOUR_PUB_KEY
+recaptcha_priv_key: YOUR_PRIV_KEY
 </shell>
 
 
